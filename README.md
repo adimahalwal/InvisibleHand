@@ -2,22 +2,17 @@
 
 Monte Carlo simulations 
 
-learn about \link{https://youtu.be/r7cn3WS5x9c?si=ZuaV7qInI_g_yc_D}
+learn about it: https://youtu.be/r7cn3WS5x9c?si=ZuaV7qInI_g_yc_D
 
-## Find out more about building applications with Shiny here:
-##    https://shiny.posit.co/
+### Find out more about building applications with Shiny here:
+###    https://shiny.posit.co/
 
-library(shiny)
-library(tidyverse)
-library(MASS)
-library(rsconnect)
+library(shiny) ### For building interactive web applications.
+library(tidyverse) ### A collection of data manipulation and visualization tools.
+library(MASS) ### Provides functions and datasets for statistical methods.
+library(rsconnect) ### To deploy applications to RStudio's hosting platform.
 
-shiny: For building interactive web applications.
-tidyverse: A collection of data manipulation and visualization tools.
-MASS: Provides functions and datasets for statistical methods.
-rsconnect: To deploy applications to RStudio's hosting platform.
-
-# Define UI
+### Define UI
 ui <- fluidPage(
   titlePanel("Monte Carlo Simulation with Different OLS Procedures"),
   
