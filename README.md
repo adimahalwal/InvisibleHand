@@ -7,10 +7,15 @@ learn about it: https://youtu.be/r7cn3WS5x9c?si=ZuaV7qInI_g_yc_D
 ### Find out more about building applications with Shiny here:
 ###    https://shiny.posit.co/
 
-library(shiny) ### For building interactive web applications.
-library(tidyverse) ### A collection of data manipulation and visualization tools.
-library(MASS) ### Provides functions and datasets for statistical methods.
-library(rsconnect) ### To deploy applications to RStudio's hosting platform.
+
+### For building interactive web applications.
+library(shiny)
+### A collection of data manipulation and visualization tools.
+library(tidyverse)
+### A collection of data manipulation and visualization tools.
+library(MASS)
+### To deploy applications to RStudio's hosting platform.
+library(rsconnect) 
 
 ### Define UI
 ui <- fluidPage(
