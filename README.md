@@ -1,19 +1,19 @@
-# InvisibleHand
+## InvisibleHand
+
 Monte Carlo simulations 
 
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
 # Find out more about building applications with Shiny here:
-#
 #    https://shiny.posit.co/
-#
+
 library(shiny)
 library(tidyverse)
 library(MASS)
 library(rsconnect)
 
+shiny: For building interactive web applications.
+tidyverse: A collection of data manipulation and visualization tools.
+MASS: Provides functions and datasets for statistical methods.
+rsconnect: To deploy applications to RStudio's hosting platform.
 
 # Define UI
 ui <- fluidPage(
