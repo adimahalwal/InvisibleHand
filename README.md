@@ -1,9 +1,11 @@
-## InvisibleHand
+# InvisibleHand
 
 Monte Carlo simulations 
 
-# Find out more about building applications with Shiny here:
-#    https://shiny.posit.co/
+learn about \link{https://youtu.be/r7cn3WS5x9c?si=ZuaV7qInI_g_yc_D}
+
+## Find out more about building applications with Shiny here:
+##    https://shiny.posit.co/
 
 library(shiny)
 library(tidyverse)
