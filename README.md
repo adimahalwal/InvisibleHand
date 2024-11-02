@@ -8,13 +8,13 @@ learn about it: https://youtu.be/r7cn3WS5x9c?si=ZuaV7qInI_g_yc_D
 ###    https://shiny.posit.co/
 
 
-### For building interactive web applications.
+### * For building interactive web applications.
 library(shiny)
-### A collection of data manipulation and visualization tools.
+### * A collection of data manipulation and visualization tools.
 library(tidyverse)
-### A collection of data manipulation and visualization tools.
+### * A collection of data manipulation and visualization tools.
 library(MASS)
-### To deploy applications to RStudio's hosting platform.
+### * To deploy applications to RStudio's hosting platform.
 library(rsconnect) 
 
 ### Define UI
