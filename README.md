@@ -2,22 +2,54 @@
 
 Monte Carlo simulations 
 
-learn about it: https://youtu.be/r7cn3WS5x9c?si=ZuaV7qInI_g_yc_D
+learn more about it: https://youtu.be/r7cn3WS5x9c?si=ZuaV7qInI_g_yc_D
 
 ### Find out more about building applications with Shiny here:
 ###    https://shiny.posit.co/
 
 
-### * For building interactive web applications.
+### For building interactive web applications.
 library(shiny)
-### * A collection of data manipulation and visualization tools.
+### A collection of data manipulation and visualization tools.
 library(tidyverse)
-### * A collection of data manipulation and visualization tools.
+### A collection of data manipulation and visualization tools.
 library(MASS)
-### * To deploy applications to RStudio's hosting platform.
+### To deploy applications to RStudio's hosting platform.
 library(rsconnect) 
 
-### Define UI
+## Define UI
+
+UI Definition: ui <- fluidPage(...)
+
+fluidPage() creates a responsive web page layout for the app.
+Title: titlePanel("Monte Carlo Simulation with Different OLS Procedures")
+
+Displays the title at the top of the app.
+Layout: sidebarLayout(...)
+
+Splits the UI into a sidebar for inputs and a main panel for outputs.
+Sidebar Panel (sidebarPanel(...)):
+
+Simulation Settings (h4("Simulation Settings")): Headers and input elements for setting up simulations.
+
+sliderInput("n", ...): Slider for selecting sample size, with a range from 10 to 500.
+sliderInput("num_sim", ...): Slider for setting the number of simulations (100 to 5000).
+sliderInput("sigma", ...): Slider to adjust error standard deviation (1 to 20).
+Model Parameters (h4("Model Parameters")):
+
+selectInput("procedure", ...): Dropdown to select one of three OLS procedures.
+Conditional Inputs (conditionalPanel(...)):
+Only appears if a procedure is selected.
+numericInput("beta_0", ...): Input for the intercept value.
+numericInput("beta_1", ...) and numericInput("beta_2", ...): Inputs for slope values.
+sliderInput("rho", ...): Slider for correlation, ranging from -1 to 1.
+Main Panel (mainPanel(...)):
+
+Outputs:
+verbatimTextOutput("results"): Text output for displaying simulation results.
+plotOutput("density_plots"): Plot area to show density plots of results.
+
+
 ui <- fluidPage(
   titlePanel("Monte Carlo Simulation with Different OLS Procedures"),
   
@@ -47,7 +79,34 @@ ui <- fluidPage(
   )
 )
 
-# Define server
+
+
+
+## Define server
+Server Function: server <- function(input, output) {...}
+
+This defines the server-side logic of the Shiny app, including the simulation process.
+Reactive Simulation: run_simulation <- reactive({ ... })
+
+Defines a reactive expression that runs the simulation whenever input values change.
+Initialize Variables:
+
+set.seed(123): Ensures reproducibility of random results.
+beta_0_estimates, beta_1_estimates, and beta_2_estimates: Arrays to store the estimated coefficients for each simulation run.
+beta_2_estimates is set to NA if procedure2 is chosen, as it doesn’t use beta_2.
+Simulation Loop:
+
+For each iteration (1:input$num_sim), the following steps are executed:
+mean_vector and var_covar: Defines mean and covariance matrices for generating correlated random variables x.
+x <- mvrnorm(...): Generates correlated variables x1 and x2 based on the correlation (rho) and sample size (n).
+epsilon <- rnorm(...): Generates error terms with a specified standard deviation (sigma).
+y <- ...: Constructs the response variable using the specified intercept and slopes.
+Procedure Logic:
+
+procedure1: Runs a multiple linear regression on both x1 and x2, storing all estimated coefficients.
+procedure2: Runs a single linear regression on x1, storing beta_0 and beta_1 estimates only.
+procedure3: Runs a multiple regression on both x1 and x2. If the p-value of x2 is below 0.05, it keeps both variables; otherwise, it refits the model using only x1.
+
 server <- function(input, output) {
   
   # Reactive function to run simulation based on chosen procedure
@@ -113,6 +172,27 @@ server <- function(input, output) {
   })
   
   # Display summary results
+
+output$results <- renderPrint({ ... }):
+
+This function generates a print output for display in the UI.
+Run the Simulation:
+
+results <- run_simulation(): Calls the reactive simulation function to get results.
+model <- results$last_model: Retrieves the last fitted model from the simulation (if stored).
+Print True and Estimated Values:
+
+cat("True Intercept (beta_0):", input$beta_0, "\n"): Prints the true intercept (user-specified).
+cat("Mean of Estimated Intercepts:", results$mean_beta_0, "\n"): Prints the mean of estimated intercepts across all simulations.
+cat("Standard Deviation of Estimated Intercepts:", results$sd_beta_0, "\n\n"): Prints the standard deviation of estimated intercepts.
+For beta_1 (slope):
+Similar cat statements display the mean and standard deviation for beta_1 estimates.
+For beta_2 (second slope):
+If procedure2 is not selected, displays mean and standard deviation of beta_2 estimates.
+Display the Last Model Summary:
+
+if (!is.null(model)) { print(summary(model)) }: If a model is available, it prints a detailed summary of the last model, including estimates, standard errors, t-values, and p-values for each coefficient.
+  
   output$results <- renderPrint({
     results <- run_simulation()
     model <- results$last_model  # Retrieve the last fitted model
@@ -138,6 +218,30 @@ server <- function(input, output) {
   })
   
   # Plot density plots for estimates
+
+output$density_plots <- renderPlot({ ... }):
+
+This function creates plots in response to user inputs and displays them in the UI.
+Run Simulation:
+
+results <- run_simulation(): Calls the reactive simulation function to obtain coefficient estimates.
+Plot Layout:
+
+par(mfrow = c(1, ifelse(input$procedure == "procedure2", 2, 3))): Sets up a layout with 2 or 3 columns based on the chosen procedure.
+If procedure2 is selected, only two plots (for beta_0 and beta_1) will be shown.
+For other procedures, three plots (including beta_2) are shown.
+Helper Function for Density Plotting:
+
+plot_density_safe: A custom function to plot the density of an estimate safely.
+Checks if there’s enough variation in the data (more than one unique value) to produce a meaningful density plot.
+If yes, plots the density; otherwise, displays a message saying "Insufficient data for density plot."
+Density Plots:
+
+plot_density_safe(results$beta_0_estimates, "blue", ...): Plots the density of intercept (beta_0) estimates in blue.
+plot_density_safe(results$beta_1_estimates, "green", ...): Plots the density of beta_1 slope estimates in green.
+For beta_2 (if applicable):
+If the procedure isn’t procedure2, it plots beta_2 estimates in red.
+  
   output$density_plots <- renderPlot({
     results <- run_simulation()
     par(mfrow = c(1, ifelse(input$procedure == "procedure2", 2, 3)))
